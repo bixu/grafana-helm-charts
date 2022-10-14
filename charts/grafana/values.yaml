@@ -679,6 +679,11 @@ grafana.ini:
     url: https://grafana.net
   server:
     domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ .Values.ingress.hosts | first }}{{ else }}''{{ end }}"
+  tracing.opentelemetry:
+    custom_attributes: sumup.org.tribe:platform,sumup.org.squad:observability
+  tracing.opentelemetry.otlp:
+    address: localhost:4317
+    propagation: w3c
 ## grafana Authentication can be enabled with the following values on grafana.ini
  # server:
       # The full public facing url you use in browser, used for redirects and emails

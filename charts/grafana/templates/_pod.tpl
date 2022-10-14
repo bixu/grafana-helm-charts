@@ -220,6 +220,20 @@ imagePullSecrets:
 enableServiceLinks: {{ .Values.enableServiceLinks }}
 {{- end }}
 containers:
+  - name: otel-collector
+    image: otel/opentelemetry-collector-contrib:0.51.0
+    args:
+      - "--config"
+      - "/etc/otel-collector-config.yaml"
+    volumeMounts:
+      - name: otel-collector-config
+        mountPath: /etc/otel-collector-config.yaml
+        subPath: otel-collector-config.yaml
+    resources:
+      limits:
+        cpu: 0.2
+      requests:
+        cpu: 0.1
 {{- if .Values.sidecar.alerts.enabled }}
   - name: {{ template "grafana.name" . }}-sc-alerts
     {{- if .Values.sidecar.image.sha }}
@@ -964,6 +978,9 @@ tolerations:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 volumes:
+  - name: otel-collector-config
+    configMap:
+      name: otel-collector-config
   - name: config
     configMap:
       name: {{ template "grafana.fullname" . }}
